@@ -11,6 +11,9 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+
 /**
  * Created by Bergie on 1/7/2016.
  * Following tutorial at:
@@ -69,15 +72,16 @@ public class GmailSignInTest {
         //  Go to Gmail
         driver.get("http://gmail.com");
         //  Fill in Username
-        WebElement usernameTextBox = driver.findElement(By.id("Email"));
+
+        WebElement usernameTextBox = WaitAndFindID("Email"); //driver.findElement(By.id("Email"));
         usernameTextBox.clear();
         usernameTextBox.sendKeys("bergiesm@gmail.com");
         //  Click Next
-        WebElement usernameNextButton = driver.findElement(By.id("next"));
+        WebElement usernameNextButton = WaitAndFindID("next");   //driver.findElement(By.id("next"));
         usernameNextButton.click();
         //  Fill in Password
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("Passwd")));
-        WebElement passwordTextBox = driver.findElement(By.id("Passwd"));
+            //wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("Passwd")));
+        WebElement passwordTextBox = WaitAndFindID("Passwd");    //driver.findElement(By.id("Passwd"));
         passwordTextBox.clear();
         passwordTextBox.sendKeys("b3rgB#RG##");
         // Uncheck 'Stay Signed In'
@@ -101,33 +105,65 @@ public class GmailSignInTest {
         WebElement composeButton = driver.findElement(By.cssSelector("div[role='button'][gh='cm']"));
         composeButton.click();
         //  Fill in Recipient
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(":cw")));
-        WebElement emailRecipientTextArea = driver.findElement(By.cssSelector("textarea[id=':cw']"));
-        emailRecipientTextArea.clear();
-        emailRecipientTextArea.sendKeys("BergieSM@Gmail.com");
+            //wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("textarea[name='to']")));
+        WebElement toTextArea = WaitAndFindCss("textarea[name='to']");   //driver.findElement(By.cssSelector("textarea[name='to']"));
+        toTextArea.clear();
+        toTextArea.sendKeys("BergieSM@Gmail.com");
         //  Fill in Subject
-        WebElement emailSubjectTextEntry = driver.findElement(By.cssSelector("textarea[id=':db']"));
-        emailSubjectTextEntry.clear();
-        emailSubjectTextEntry.sendKeys("SUBJECT HERE");
+            //wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input[name='subjectbox']")));
+        WebElement subjectTextArea = WaitAndFindCss("input[name='subjectbox']");    //driver.findElement(By.cssSelector("input[name='subjectbox']"));
+        final String subject= "Gmail Send Email Test";
+        subjectTextArea.clear();
+        subjectTextArea.sendKeys(subject);
         //  Fill in Email Body
-        WebElement emailBodyTextEntry = driver.findElement(By.cssSelector("textarea[id=':gy']"));
+            //wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div[aria-label='Message Body']")));
+        WebElement emailBodyTextEntry = WaitAndFindCss("div[aria-label='Message Body']");   //driver.findElement(By.cssSelector("div[aria-label='Message Body']"));
+        final String body = "Hello Email World!";
         emailBodyTextEntry.clear();
-        emailBodyTextEntry.sendKeys("EMAIL BODY HERE");
+        emailBodyTextEntry.sendKeys(body);
         //  Click Send
-        WebElement emailSendButton = driver.findElement(By.cssSelector("div[role='button'][id=':dl']"));
+            //wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div[aria-label*='Send'][aria-label*='Enter']")));
+        WebElement emailSendButton = WaitAndFindCss("div[aria-label*='Send'][aria-label*='Enter']");    //driver.findElement(By.cssSelector("div[aria-label*='Send'][aria-label*='Enter']"));
         emailSendButton.click();
         //  Click Inbox Again
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.partialLinkText("Inbox")));
-        driver.findElement(By.partialLinkText("Inbox")).click();
+        WebElement inboxLinkage = driver.findElement(By.partialLinkText("Inbox"));
+        inboxLinkage.click();
         //  Click Email
-
+            //wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div[class='y6'] span[id] b")));
+        WebElement newEmail = WaitAndFindCss("div[class='y6'] span[id] b"); //driver.findElement(By.cssSelector("div[class='y6'] span[id] b"));
+        newEmail.click();
         //  Verify the email subject and body are both correct
+        //WebElement subjectArea = driver.findElement(By.cssSelector());
+        WebElement subjectArea = WaitAndFindCss("h2[class='hP']");
+        Assert.assertEquals("Subject should be the same",subject,subjectArea.getText());
+        //WebElement bodyArea = driver.findElement(By.cssSelector());
+        WebElement bodyArea = WaitAndFindCss("div[class='a3s'] div[dir='ltr']");
+        Assert.assertEquals("Email Body Text should be the same",body,bodyArea.getText());
         //  Sign out
+    //Recycled Sign Out
+            //wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".gb_Za.gbii")));
+        WebElement profilePicture = WaitAndFindCss(".gb_Za.gbii");  //driver.findElement(By.cssSelector(".gb_Za.gbii"));
+        profilePicture.click();
+        WebElement signOutLink = driver.findElement(By.id("gb_71"));
+        signOutLink.click();
+        //  Verify Sign Out
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("Email")));
+        Assert.assertTrue("Should find email field if signed out",driver.findElement(By.id("Email")).isDisplayed());
     }
 
     @After
     public void Cleanup(){
         driver.quit();
+    }
+
+    public WebElement WaitAndFindCss(String cssString){
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(cssString)));
+        return driver.findElement(By.cssSelector(cssString));
+    }
+    public WebElement WaitAndFindID (String idString){
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(idString)));
+        return driver.findElement(By.id(idString));
     }
 }
 //bergiesm@gmail.com
