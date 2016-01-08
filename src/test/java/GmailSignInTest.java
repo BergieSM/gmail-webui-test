@@ -121,6 +121,7 @@ public class GmailSignInTest {
         final String body = "Hello Email World!";
         emailBodyTextEntry.clear();
         emailBodyTextEntry.sendKeys(body);
+        //emailBodyTextEntry.sendKeys(new CharSequence[]{Charset.forName("UTF-8").encode(body)});
         //  Click Send
             //wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div[aria-label*='Send'][aria-label*='Enter']")));
         WebElement emailSendButton = WaitAndFindCss("div[aria-label*='Send'][aria-label*='Enter']");    //driver.findElement(By.cssSelector("div[aria-label*='Send'][aria-label*='Enter']"));
