@@ -1,5 +1,9 @@
+import com.sun.xml.internal.fastinfoset.util.CharArray;
 import com.thoughtworks.selenium.webdriven.commands.IsVisible;
 import org.apache.commons.collections.Predicate;
+import org.apache.commons.io.input.CharSequenceInputStream;
+import org.apache.commons.io.input.CharSequenceReader;
+import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.junit.*;
 import org.openqa.selenium.By;
@@ -11,6 +15,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import javax.swing.*;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 
@@ -20,8 +25,11 @@ import java.nio.charset.CharsetEncoder;
  * https://www.udemy.com/webdriver-test-automation-framework-step-by-step
  */
 public class GmailSignInTest {
+    final String pass = JOptionPane.showInputDialog(JOptionPane.getRootFrame(),
+            "Enter the gmail password", null, JOptionPane.PLAIN_MESSAGE);
     WebDriver driver = new FirefoxDriver();
     WebDriverWait wait = new WebDriverWait(driver,30);
+
 
     @Test
     public void gmailLoginShouldBeSuccessful(){
@@ -39,7 +47,7 @@ public class GmailSignInTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("Passwd")));
         WebElement passwordTextBox = driver.findElement(By.id("Passwd"));
         passwordTextBox.clear();
-        passwordTextBox.sendKeys("b3rgB#RG##");
+        passwordTextBox.sendKeys(pass);
             // Uncheck 'Stay Signed In'
             WebElement staySignedInCheckbox = driver.findElement(By.id("PersistentCookie"));
             String staySignedInCheckedAttribute = staySignedInCheckbox.getAttribute("checked");
@@ -67,6 +75,7 @@ public class GmailSignInTest {
     }
 
     @Test
+    //This test assumes that the gmail email list has no unread messages in it to begin with.  Check before first run.
     public void gmailSendAndReceiveEmailTest(){
     //All from previous example test
         //  Go to Gmail
@@ -83,7 +92,7 @@ public class GmailSignInTest {
             //wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("Passwd")));
         WebElement passwordTextBox = WaitAndFindID("Passwd");    //driver.findElement(By.id("Passwd"));
         passwordTextBox.clear();
-        passwordTextBox.sendKeys("b3rgB#RG##");
+        passwordTextBox.sendKeys(pass);
         // Uncheck 'Stay Signed In'
         WebElement staySignedInCheckbox = driver.findElement(By.id("PersistentCookie"));
         String staySignedInCheckedAttribute = staySignedInCheckbox.getAttribute("checked");
@@ -118,9 +127,13 @@ public class GmailSignInTest {
         //  Fill in Email Body
             //wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div[aria-label='Message Body']")));
         WebElement emailBodyTextEntry = WaitAndFindCss("div[aria-label='Message Body']");   //driver.findElement(By.cssSelector("div[aria-label='Message Body']"));
-        final String body = "Hello Email World!";
+        final String body = "Hello Email World";
+        //apparently, "!" doesn't work with sendkeys very well.  See https://code.google.com/p/selenium/issues/detail?id=6411 for updated info.
+        //System.out.println("body: "+body);    //debug
+        //System.out.println("body as char array: "+body.toCharArray());    //debug
         emailBodyTextEntry.clear();
         emailBodyTextEntry.sendKeys(body);
+
         //emailBodyTextEntry.sendKeys(new CharSequence[]{Charset.forName("UTF-8").encode(body)});
         //  Click Send
             //wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div[aria-label*='Send'][aria-label*='Enter']")));
@@ -128,8 +141,9 @@ public class GmailSignInTest {
         emailSendButton.click();
         //  Click Inbox Again
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.partialLinkText("Inbox")));
-        WebElement inboxLinkage = driver.findElement(By.partialLinkText("Inbox"));
-        inboxLinkage.click();
+        //WebElement inboxLinkage =
+                driver.findElement(By.partialLinkText("Inbox")).click();
+        //inboxLinkage.click();
         //  Click Email
             //wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div[class='y6'] span[id] b")));
         WebElement newEmail = WaitAndFindCss("div[class='y6'] span[id] b"); //driver.findElement(By.cssSelector("div[class='y6'] span[id] b"));
@@ -167,5 +181,9 @@ public class GmailSignInTest {
         return driver.findElement(By.id(idString));
     }
 }
+
 //bergiesm@gmail.com
-//b3rgB#RG##
+//
+//136.206.107.93
+//HEANET HEAnet Limited,IE
+//Just stop.
