@@ -25,7 +25,7 @@ public class GmailSignInTest {
     WebDriverWait wait = new WebDriverWait(driver, 30);
 
     @Test
-    public void gmailLoginShAutoQARulesouldBeSuccessful() {
+    public void gmailLoginShouldBeSuccessful() {
         //  Go to Gmail
         SignInPage signInPage = WebUtil.goToSignInPage(driver);
 

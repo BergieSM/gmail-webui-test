@@ -1,56 +1,42 @@
 package com.Bergie.pageobjects;
 
+import com.Bergie.util.WebUtil;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * Created by Jonathan on 1/11/2016.
  */
 public class SignInPage {
     public static void fillInUsername(WebDriver driver, String s) {
-        WebElement usernameTextBox = driver.findElement(By.id("Email"));
-        usernameTextBox.clear();
-        usernameTextBox.sendKeys(s);
+        WebUtil.clearAndSendKeys(driver, By.id("Email"), s);
     }
 
     public static void clickNext(WebDriver driver) {
-        WebElement usernameNextButton = driver.findElement(By.id("next"));
-        usernameNextButton.click();
+        WebUtil.click(driver, By.id("next"));
     }
 
     public static void fillInPassword(WebDriver driver, String pass) {
-        WebDriverWait wait = new WebDriverWait(driver, 30);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("Passwd")));
-        WebElement passwordTextBox = driver.findElement(By.id("Passwd"));
-        passwordTextBox.clear();
-        passwordTextBox.sendKeys(pass);
+        WebUtil.clearAndSendKeys(driver, By.id("Passwd"), pass);
     }
 
     public static void uncheckStaySignedIn(WebDriver driver) {
         WebElement staySignedInCheckbox = driver.findElement(By.id("PersistentCookie"));
         String staySignedInCheckedAttribute = staySignedInCheckbox.getAttribute("checked");
-        //System.out.println("staySignedInCheckedAttribute = "+staySignedInCheckedAttribute);   DEBUG
-        //System.out.println(staySignedInCheckedAttribute); DEBUG
         if (staySignedInCheckedAttribute.equals("true")) {
-            staySignedInCheckbox.click();
-            //staySignedInCheckedAttribute =  staySignedInCheckbox.getAttribute("checked"); DEBUG
-            //System.out.println("staySignedInCheckedAttribute after click = "+staySignedInCheckedAttribute);   DEBUG
+            WebUtil.click(driver, By.id("PersistentCookie"));
         }
     }
 
     public static EmailHomePage clickSignIn(WebDriver driver) {
-        WebDriverWait wait = new WebDriverWait(driver, 30);
-        WebElement signInButton = driver.findElement(By.id("signIn"));
-        signInButton.click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.partialLinkText("Inbox")));
+        WebUtil.click(driver, By.id("signIn"));
+        WebUtil.waitForElementVisible(driver, By.partialLinkText("Inbox"));
         return PageFactory.initElements(driver, EmailHomePage.class);
     }
 
     public boolean isEmailDisplayed(WebDriver driver) {
-        return driver.findElement(By.id("Email")).isDisplayed();
+        return WebUtil.doesElementExist(driver, By.id("Email"));
     }
 }
