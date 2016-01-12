@@ -1,3 +1,6 @@
+import com.Bergie.pageobjects.EmailHomePage;
+import com.Bergie.pageobjects.SignInPage;
+import com.Bergie.util.WebUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,6 +17,8 @@ import javax.swing.*;
  * Created by Bergie on 1/7/2016.
  * Following tutorial at:
  * https://www.udemy.com/webdriver-test-automation-framework-step-by-step
+ * Issue encountered during development:
+ * https://code.google.com/p/selenium/issues/detail?id=6411
  */
 public class GmailSignInTest {
     final String pass = JOptionPane.showInputDialog(JOptionPane.getRootFrame(),
@@ -21,48 +26,34 @@ public class GmailSignInTest {
     WebDriver driver = new FirefoxDriver();
     WebDriverWait wait = new WebDriverWait(driver, 30);
 
-
     @Test
-    public void gmailLoginShouldBeSuccessful() {
-        //WebDriverWait wait = new WebDriverWait(driver,30);
+    public void gmailLoginShAutoQARulesouldBeSuccessful() {
         //  Go to Gmail
-        driver.get("http://gmail.com");
+        SignInPage signInPage = WebUtil.goToSignInPage(driver);
+
         //  Fill in Username
-        WebElement usernameTextBox = driver.findElement(By.id("Email"));
-        usernameTextBox.clear();
-        usernameTextBox.sendKeys("bergiesm@gmail.com");
+        SignInPage.fillInUsername(driver, "bergiesm@gmail.com");
+
         //  Click Next
-        WebElement usernameNextButton = driver.findElement(By.id("next"));
-        usernameNextButton.click();
+        SignInPage.clickNext(driver);
+
         //  Fill in Password
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("Passwd")));
-        WebElement passwordTextBox = driver.findElement(By.id("Passwd"));
-        passwordTextBox.clear();
-        passwordTextBox.sendKeys(pass);
+        SignInPage.fillInPassword(driver, wait, pass);
+
         // Uncheck 'Stay Signed In'
-        WebElement staySignedInCheckbox = driver.findElement(By.id("PersistentCookie"));
-        String staySignedInCheckedAttribute = staySignedInCheckbox.getAttribute("checked");
-        //System.out.println("staySignedInCheckedAttribute = "+staySignedInCheckedAttribute);   DEBUG
-        //System.out.println(staySignedInCheckedAttribute); DEBUG
-        if (staySignedInCheckedAttribute.equals("true")) {
-            staySignedInCheckbox.click();
-            //staySignedInCheckedAttribute =  staySignedInCheckbox.getAttribute("checked"); DEBUG
-            //System.out.println("staySignedInCheckedAttribute after click = "+staySignedInCheckedAttribute);   DEBUG
-        }
+        SignInPage.uncheckStaySignedIn(driver, wait);
+
         //  Click Sign In
-        WebElement signInButton = driver.findElement(By.id("signIn"));
-        signInButton.click();
+        EmailHomePage emailHomePage = SignInPage.clickSignIn(driver, wait);
+
         //  Verify Sign In
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.partialLinkText("Inbox")));
-        Assert.assertTrue("Inbox should exist", driver.findElement(By.partialLinkText("Inbox")).getSize().getWidth() > 0);
+        Assert.assertTrue("Inbox should exist if signed in", EmailHomePage.doesInboxExist(driver));
+
         //  Sign Out
-        WebElement profilePicture = driver.findElement(By.cssSelector(".gb_Za.gbii"));
-        profilePicture.click();
-        WebElement signOutLink = driver.findElement(By.id("gb_71"));
-        signOutLink.click();
+        signInPage = EmailHomePage.signOut(driver, wait);
+
         //  Verify Sign Out
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("Email")));
-        Assert.assertTrue("Should find email field if signed out", driver.findElement(By.id("Email")).isDisplayed());
+        Assert.assertTrue("Should find email field if signed out", signInPage.isEmailDisplayed(driver));
     }
 
     @Test
