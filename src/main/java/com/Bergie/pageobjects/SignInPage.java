@@ -22,14 +22,15 @@ public class SignInPage {
         usernameNextButton.click();
     }
 
-    public static void fillInPassword(WebDriver driver, WebDriverWait wait, String pass) {
+    public static void fillInPassword(WebDriver driver, String pass) {
+        WebDriverWait wait = new WebDriverWait(driver, 30);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("Passwd")));
         WebElement passwordTextBox = driver.findElement(By.id("Passwd"));
         passwordTextBox.clear();
         passwordTextBox.sendKeys(pass);
     }
 
-    public static void uncheckStaySignedIn(WebDriver driver, WebDriverWait wait) {
+    public static void uncheckStaySignedIn(WebDriver driver) {
         WebElement staySignedInCheckbox = driver.findElement(By.id("PersistentCookie"));
         String staySignedInCheckedAttribute = staySignedInCheckbox.getAttribute("checked");
         //System.out.println("staySignedInCheckedAttribute = "+staySignedInCheckedAttribute);   DEBUG
@@ -39,10 +40,10 @@ public class SignInPage {
             //staySignedInCheckedAttribute =  staySignedInCheckbox.getAttribute("checked"); DEBUG
             //System.out.println("staySignedInCheckedAttribute after click = "+staySignedInCheckedAttribute);   DEBUG
         }
-
     }
 
-    public static EmailHomePage clickSignIn(WebDriver driver, WebDriverWait wait) {
+    public static EmailHomePage clickSignIn(WebDriver driver) {
+        WebDriverWait wait = new WebDriverWait(driver, 30);
         WebElement signInButton = driver.findElement(By.id("signIn"));
         signInButton.click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.partialLinkText("Inbox")));
