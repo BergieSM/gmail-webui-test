@@ -1,3 +1,5 @@
+import com.Bergie.categories.Critical;
+import com.Bergie.categories.Major;
 import com.Bergie.pageobjects.EmailHomePage;
 import com.Bergie.pageobjects.EmailViewPage;
 import com.Bergie.pageobjects.SignInPage;
@@ -5,6 +7,7 @@ import com.Bergie.util.WebUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -24,6 +27,7 @@ public class GmailSignInTest {
     WebDriver driver = new FirefoxDriver();
     WebDriverWait wait = new WebDriverWait(driver, 30);
 
+    @Category({Critical.class})
     @Test
     public void gmailLoginShouldBeSuccessful() {
         //  Go to Gmail
@@ -54,6 +58,7 @@ public class GmailSignInTest {
         Assert.assertTrue("Should find email field if signed out", signInPage.isEmailDisplayed(driver));
     }
 
+    @Category({Major.class})
     @Test
     //This test assumes that the gmail email list has no unread messages in it to begin with.  Check before first run.
     public void gmailSendAndReceiveEmailTest() {
