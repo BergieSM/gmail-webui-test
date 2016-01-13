@@ -6,7 +6,7 @@ import com.Bergie.pageobjects.SignInPage;
 import com.Bergie.util.WebUtil;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.WebDriver;
@@ -23,7 +23,7 @@ public class GmailSignInTest {
     String pass;
     WebDriver driver;
 
-    @BeforeClass
+    @Before
     public void Buildup() {
         System.out.println("Code starting here");
         System.out.println("BSMPass: " + System.getProperties().getProperty("BSMpass"));
