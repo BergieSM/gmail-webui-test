@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 import javax.swing.*;
 
@@ -30,14 +30,21 @@ public class GmailSignInTest {
         } else {
             pass = JOptionPane.showInputDialog(JOptionPane.getRootFrame(), "Enter the gmail password", null, JOptionPane.PLAIN_MESSAGE);
         }
-        driver = new FirefoxDriver();
+        //driver = new FirefoxDriver();
+        if (System.getProperty("os.name").contains("Mac")) {
+            System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "\\src\\main\\resources\\chromedriver\\mac\\chromedriver");
+        } else {
+            System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "\\src\\main\\resources\\chromedriver\\windows\\chromedriver.exe");
+        }
+        driver = new ChromeDriver();
     }
 
     @Category({Critical.class})
     @Test
     public void gmailLoginShouldBeSuccessful() {
         //  Go to Gmail
-        SignInPage signInPage = WebUtil.goToSignInPage(driver);
+        SignInPage signInPage;
+        signInPage = WebUtil.goToSignInPage(driver);
 
         //  Fill in Username
         SignInPage.fillInUsername(driver, "bergiesm@gmail.com");
