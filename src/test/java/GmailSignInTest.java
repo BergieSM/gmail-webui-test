@@ -6,11 +6,13 @@ import com.Bergie.pageobjects.SignInPage;
 import com.Bergie.util.WebUtil;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+
+import javax.swing.*;
 
 /**
  * Created by Bergie on 1/7/2016.
@@ -21,11 +23,17 @@ public class GmailSignInTest {
     String pass;
     WebDriver driver;
 
-    @Before
+    @BeforeClass
     public void Buildup() {
-        System.out.println(System.getProperties().getProperty("BSMpass"));
-        pass = System.getProperty("BSMpass");
-        //pass = JOptionPane.showInputDialog(JOptionPane.getRootFrame(),"Enter the gmail password", null, JOptionPane.PLAIN_MESSAGE);
+        System.out.println("Code starting here");
+        System.out.println("BSMPass: " + System.getProperties().getProperty("BSMpass"));
+        System.out.println("System.getenv(\"BSMPass\": " + System.getenv("BSMPass"));
+        if (System.getProperty("BSMpass") != null) {
+            pass = System.getProperty("BSMpass");
+        } else {
+            pass = JOptionPane.showInputDialog(JOptionPane.getRootFrame(), "Enter the gmail password", null, JOptionPane.PLAIN_MESSAGE);
+        }
+
         driver = new FirefoxDriver();
     }
 
