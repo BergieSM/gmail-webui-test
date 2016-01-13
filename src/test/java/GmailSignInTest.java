@@ -25,15 +25,11 @@ public class GmailSignInTest {
 
     @Before
     public void Buildup() {
-        System.out.println("Code starting here");
-        System.out.println("BSMPass: " + System.getProperties().getProperty("BSMpass"));
-        System.out.println("System.getenv(\"BSMPass\": " + System.getenv("BSMPass"));
-        if (System.getProperty("BSMpass") != null) {
-            pass = System.getProperty("BSMpass");
+        if (System.getenv("BSMpass") != null) {
+            pass = System.getenv("BSMpass");
         } else {
             pass = JOptionPane.showInputDialog(JOptionPane.getRootFrame(), "Enter the gmail password", null, JOptionPane.PLAIN_MESSAGE);
         }
-
         driver = new FirefoxDriver();
     }
 
