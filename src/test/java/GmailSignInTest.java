@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 import javax.swing.*;
 
@@ -18,11 +19,18 @@ import javax.swing.*;
  * Created by Bergie on 1/7/2016.
  * Following tutorial at:
  * https://www.udemy.com/webdriver-test-automation-framework-step-by-step
+ *
+ * Links to keep track of for the future:
+ * https://sites.google.com/a/chromium.org/chromedriver/mobile-emulation
+ * https://technicaltesting.wordpress.com/2012/04/#4
  */
 public class GmailSignInTest {
     String pass;
     WebDriver driver;
 
+    /**
+     * Chromedriver os check based off of https://technicaltesting.wordpress.com/2012/12/07/bundling-chrome-driver-with-your-test-code/
+     */
     @Before
     public void Buildup() {
         if (System.getenv("BSMpass") != null) {
@@ -30,13 +38,17 @@ public class GmailSignInTest {
         } else {
             pass = JOptionPane.showInputDialog(JOptionPane.getRootFrame(), "Enter the gmail password", null, JOptionPane.PLAIN_MESSAGE);
         }
-        //driver = new FirefoxDriver();
-        if (System.getProperty("os.name").contains("Mac")) {
-            System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "\\src\\main\\resources\\chromedriver\\mac\\chromedriver");
+        String browserName = System.getenv("browser");
+        if (browserName != null && browserName.equalsIgnoreCase("Chrome")) {
+            if (System.getProperty("os.name").contains("Mac")) {
+                System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "\\src\\main\\resources\\chromedriver\\mac\\chromedriver");
+            } else {
+                System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "\\src\\main\\resources\\chromedriver\\windows\\chromedriver.exe");
+            }
+            driver = new ChromeDriver();
         } else {
-            System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "\\src\\main\\resources\\chromedriver\\windows\\chromedriver.exe");
+            driver = new FirefoxDriver();
         }
-        driver = new ChromeDriver();
     }
 
     @Category({Critical.class})
